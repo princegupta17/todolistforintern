@@ -5,6 +5,7 @@ import TodoItem from "./components/TodoItem";
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [filterOption, setFilterOption] = useState("all");
 
   const addTodo = (todo) => {
     setTodos((prev) => [{ id: Date.now(), ...todo }, ...prev]);
@@ -30,6 +31,18 @@ function App() {
     );
   };
 
+  const allFilter = () => {
+    setFilterOption("all");
+  };
+
+  const activeFilter = () => {
+    setFilterOption("active");
+  };
+
+  const completedfilter = () => {
+    setFilterOption("completed");
+  };
+
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem("todos"));
 
@@ -52,14 +65,53 @@ function App() {
           <div className="mb-4">
             {/* Todo form goes here */}
             <Todoform />
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4 mx-2"
+              onClick={allFilter}
+            >
+              All
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4 mx-2"
+              onClick={activeFilter}
+            >
+              Active
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mt-4 mx-2"
+              onClick={completedfilter}
+            >
+              Completed
+            </button>
           </div>
           <div className="flex flex-wrap gap-y-3">
             {/*loop and add todoitem here */}
-            {todos.map((todo) => (
+            {/* {todos.map((todo) => (
               <div key={todo.id} className="w-full">
                 <TodoItem todo={todo} />
               </div>
-            ))}
+            ))} */}
+            {filterOption === "all"
+              ? todos.map((todo) => (
+                  <div key={todo.id} className="w-full">
+                    <TodoItem todo={todo} />
+                  </div>
+                ))
+              : filterOption === "active"
+              ? todos
+                  .filter((todo) => todo.completed === false)
+                  .map((todo) => (
+                    <div key={todo.id} className="w-full">
+                      <TodoItem todo={todo} />
+                    </div>
+                  ))
+              : todos
+                  .filter((todo) => todo.completed === true)
+                  .map((todo) => (
+                    <div key={todo.id} className="w-full">
+                      <TodoItem todo={todo} />
+                    </div>
+                  ))}
           </div>
         </div>
       </div>
